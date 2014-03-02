@@ -1,14 +1,8 @@
-﻿using System.Collections.Generic;
-using System;
-using System.Linq;
-
-
-using System.Runtime.CompilerServices;
+﻿using System;
 using EnvDTE;
 using EnvDTE80;
 
-
-namespace T4ToRgen
+namespace T4ToRgen.Extension
 {
     internal static class ProjectSolutionExtensions
     {
@@ -74,10 +68,9 @@ namespace T4ToRgen
         
         public static void SelectSolutionExplorerNode(this DTE2 dte2, string nodePath)
         {
-            var item = default(UIHierarchyItem);
             try
             {
-                item = dte2.ToolWindows.SolutionExplorer.GetItem(nodePath);
+                var item = dte2.ToolWindows.SolutionExplorer.GetItem(nodePath);
                 item.Select(vsUISelectionType.vsUISelectionTypeSelect);
             }
             catch (Exception)

@@ -87,18 +87,15 @@ namespace T4ToRgen.T4Translator
             {
                 const string regPattern = "Software\\Microsoft\\VisualStudio\\{0}_Config\\TextTemplating\\IncludeFolders\\.tt";
                 var regPath = string.Format(regPattern, dteVersion);
-                var dirs = new List<DirectoryInfo>();
                 var key = Registry.CurrentUser.OpenSubKey(regPath);
                 if (key == null)
                 {
-                    throw new Exception(regPath + " for VS v" + dteVersion + " T4 include folders was not found");
+                    throw new Exception(string.Format("{0} for VS v{1} T4 include folders was not found", regPath, dteVersion));
                 }
-                foreach (var vn in key.GetValueNames())
-                {
-                    var path = key.GetValue(Convert.ToString(vn)).ToString();
-                    dirs.Add(new DirectoryInfo(Convert.ToString(path)));
-                }
-                return dirs.ToArray();
+
+                return key.GetValueNames().
+                        Select(vn => key.GetValue(vn).ToString()).
+                        Select(path => new DirectoryInfo(path)).ToArray();
             }
         }
     }

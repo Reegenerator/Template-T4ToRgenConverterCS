@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Irony.Parsing;
 using Kodeo.Reegenerator.Wrappers;
+using T4ToRgen.Extension;
 using VSLangProj;
 
 namespace T4ToRgen.T4Translator
@@ -174,7 +175,7 @@ namespace T4ToRgen.T4Translator
 
             return _getTranslatedTextTitleCaseTerms.Contains(node.Term) ? 
                 TranslationRule.AsIs.Translate(node) : 
-                TranslationRule.AsIs_TitleCase.Translate(node);
+                TranslationRule.AsIsTitleCase.Translate(node);
         }
         public void AddAssemblyDirectiveAsProjectReference(RgenFileBuilders rfb, IEnumerable<ParseTreeNode> directives)
         {

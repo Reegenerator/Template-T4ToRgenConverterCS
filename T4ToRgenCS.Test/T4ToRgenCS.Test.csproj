@@ -66,7 +66,7 @@
       <rgenRenderers>&lt;%3fxml version="1.0" encoding="utf-16"%3f&gt;
 &lt;RgenAttachInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.reegenerator.com/RgenAttachInfoSchema.xsd"&gt;
   &lt;AttachedRenderers&gt;
-    &lt;AttachedRenderer ClassName="T4ToRgen.T4ToRgenCS" Extension=".txt"&gt;
+    &lt;AttachedRenderer ClassName="T4ToRgen.T4ToRgenCs" Extension=".txt"&gt;
       &lt;ProjectPath&gt;%24%28SolutionDir%29\T4ToRgen\T4ToRgen.csproj&lt;/ProjectPath&gt;
       &lt;Properties&gt;
         &lt;Property Name="AdditionalIncludePaths" /&gt;
@@ -83,7 +83,7 @@
       <rgenRenderers>&lt;%3fxml version="1.0" encoding="utf-16"%3f&gt;
 &lt;RgenAttachInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.reegenerator.com/RgenAttachInfoSchema.xsd"&gt;
   &lt;AttachedRenderers&gt;
-    &lt;AttachedRenderer ClassName="T4ToRgen.T4ToRgenCS" Extension=".txt"&gt;
+    &lt;AttachedRenderer ClassName="T4ToRgen.T4ToRgenCs" Extension=".txt"&gt;
       &lt;ProjectPath&gt;%24%28SolutionDir%29\T4ToRgen\T4ToRgen.csproj&lt;/ProjectPath&gt;
       &lt;Properties&gt;
         &lt;Property Name="AdditionalIncludePaths" /&gt;

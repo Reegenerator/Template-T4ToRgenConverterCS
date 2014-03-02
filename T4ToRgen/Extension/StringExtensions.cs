@@ -1,14 +1,9 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using System;
 using System.Linq;
+using System.Text;
 using Microsoft.VisualBasic;
 
-
-using System.Runtime.CompilerServices;
-using System.Text;
-
-
-namespace T4ToRgen
+namespace T4ToRgen.Extension
 {
     public static class StringExtensions
     {
@@ -17,15 +12,15 @@ namespace T4ToRgen
         {
             return sb.AppendFormat(format, values).AppendLine();
         }
-        private static char AppendIndentFormat_tab = Constants.vbTab.First();
+        private static readonly char AppendIndentFormatTab = Constants.vbTab.First();
         public static StringBuilder AppendIndentFormat(this StringBuilder sb, int tabCount, string format, params object[] values)
         {
-            return sb.AppendFormat("{0}{1}", new string(AppendIndentFormat_tab, tabCount), string.Format(format, values));
+            return sb.AppendFormat("{0}{1}", new string(AppendIndentFormatTab, tabCount), string.Format(format, values));
         }
-        private static char AppendIndent_tab = Constants.vbTab.First();
+        private static readonly char AppendIndentTab = Constants.vbTab.First();
         public static StringBuilder AppendIndent(this StringBuilder sb, int tabCount, string text)
         {
-            return sb.AppendFormat("{0}{1}", new string(AppendIndent_tab, tabCount), text);
+            return sb.AppendFormat("{0}{1}", new string(AppendIndentTab, tabCount), text);
         }
         /// <summary>
         /// Join two strings , only if both are not empty strings

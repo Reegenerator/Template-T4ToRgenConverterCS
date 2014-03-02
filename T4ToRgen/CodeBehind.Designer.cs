@@ -6,11 +6,6 @@
 // -------------------------------------------------------
 namespace T4ToRgen
 {
-    using System;
-    using System.Linq;
-    using System.Collections.Generic;
-    
-    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Reegenerator", "2.0.5.0")]
     [Kodeo.Reegenerator.Generators.TemplateDisplayAttribute(DisplayName="CodeBehind", Description="CodeBehind", HideInDialog=false)]
     public partial class CodeBehind : CodeRendererEx

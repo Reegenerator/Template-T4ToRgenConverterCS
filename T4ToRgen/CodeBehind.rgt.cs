@@ -1,9 +1,4 @@
 ﻿using System.Collections.Generic;
-using System;
-using System.Linq;
-
-
-
 
 
 namespace T4ToRgen
@@ -11,35 +6,35 @@ namespace T4ToRgen
     public partial class CodeBehind
     {
 
-        private string _ClassName;
+        private readonly string _className;
         public string ClassName
         {
             get
             {
-                return _ClassName;
+                return _className;
             }
         }
-        private IEnumerable<string> _ImportedNamespaces;
+        private readonly IEnumerable<string> _importedNamespaces;
         public IEnumerable<string> ImportedNamespaces
         {
             get
             {
-                return _ImportedNamespaces;
+                return _importedNamespaces;
             }
         }
-        private string _ClassMembers;
+        private readonly string _classMembers;
         public string ClassMembers
         {
             get
             {
-                return _ClassMembers;
+                return _classMembers;
             }
         }
         public CodeBehind(IEnumerable<string> imprts, string cls, string members)
         {
-            _ImportedNamespaces = imprts;
-            _ClassName = cls;
-            _ClassMembers = members;
+            _importedNamespaces = imprts;
+            _className = cls;
+            _classMembers = members;
         }
     }
 }

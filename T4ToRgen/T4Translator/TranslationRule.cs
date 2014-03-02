@@ -9,22 +9,24 @@ namespace T4ToRgen.T4Translator
     {
         private class TranslationRule
         {
-            public static readonly TranslationRule AsIs_TitleCase = new TranslationRule(Types.AsIs_TitleCase);
-            public static readonly TranslationRule AsIs = new TranslationRule(Types.AsIs_TitleCase);
-            public enum Types
+            public static readonly TranslationRule AsIsTitleCase = new TranslationRule(Types.AsIsTitleCase);
+            public static readonly TranslationRule AsIs = new TranslationRule(Types.AsIsTitleCase);
+
+            private enum Types
             {
                 AsIs,
-                AsIs_TitleCase,
+                AsIsTitleCase,
                 ConstantReplacement,
                 CustomFunction,
-                DictionaryReplacement,
-                ExpandTag
+                DictionaryReplacement
             }
-            public string ConstantReplacement { get; set; }
+
+            private string ConstantReplacement { get; set; }
             public Dictionary<string, string> ReplacementDict { get; set; }
-            public Func<ParseTreeNode, string> TranslateFunction { get; set; }
-            public Types Type { get; set; }
-            public TranslationRule(Types typ)
+            private Func<ParseTreeNode, string> TranslateFunction { get; set; }
+            private Types Type { get; set; }
+
+            private TranslationRule(Types typ)
             {
                 Type = typ;
             }
@@ -33,6 +35,7 @@ namespace T4ToRgen.T4Translator
                 Type = Types.ConstantReplacement;
                 ConstantReplacement = replacement;
             }
+            // ReSharper disable once UnusedMember.Local
             public TranslationRule(Func<ParseTreeNode, string> f)
             {
                 Type = Types.CustomFunction;
@@ -43,10 +46,11 @@ namespace T4ToRgen.T4Translator
                 Type = Types.DictionaryReplacement;
                 ReplacementDict = dict;
             }
-            private TextInfo ToTitleCase_textInfo = CultureInfo.InvariantCulture.TextInfo;
-            public string ToTitleCase(string s)
+            private readonly TextInfo _toTitleCaseTextInfo = CultureInfo.InvariantCulture.TextInfo;
+
+            private string ToTitleCase(string s)
             {
-                return ToTitleCase_textInfo.ToTitleCase(s);
+                return _toTitleCaseTextInfo.ToTitleCase(s);
             }
             public string Translate(ParseTreeNode node)
             {
@@ -56,33 +60,27 @@ namespace T4ToRgen.T4Translator
                     case Types.AsIs:
                         res = Convert.ToString(node.FindTokenAndGetText());
                         break;
-                    case Types.AsIs_TitleCase:
+                    case Types.AsIsTitleCase:
                         res = ToTitleCase(Convert.ToString(node.FindTokenAndGetText()));
                         break;
                     case Types.ConstantReplacement:
                         res = ConstantReplacement;
                         break;
                     case Types.DictionaryReplacement:
-                        var replacement = (string )null;
+                        string replacement;
                         ReplacementDict.TryGetValue(node.FindTokenAndGetText(),out replacement);
                         res = replacement;
                         break;
                     case Types.CustomFunction:
                         res = Convert.ToString(TranslateFunction.Invoke(node));
                         break;
-                    default:
-                        break;
                 }
-                if (res != null)
+                if (res == null) return res;
+                var terminal = node.Term as Terminal;
+                if (terminal == null) return res;
+                if (terminal.SkipsWhitespaceAfter)
                 {
-                    var terminal = node.Term as Terminal;
-                    if (terminal != null)
-                    {
-                        if (terminal.SkipsWhitespaceAfter)
-                        {
-                            res += " ";
-                        }
-                    }
+                    res += " ";
                 }
                 return res;
             }

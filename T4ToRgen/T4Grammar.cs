@@ -5,6 +5,7 @@ using System.Linq;
 
 using Irony.Parsing;
 using System.Collections.ObjectModel;
+using T4ToRgen.Extension;
 
 
 namespace T4ToRgen
@@ -16,125 +17,125 @@ namespace T4ToRgen
         /// </summary>
         /// <remarks></remarks>
         public static readonly StringComparer Comparer = StringComparer.InvariantCultureIgnoreCase;
-        private NonTerminal _Directive;
+        private NonTerminal _directive;
         public NonTerminal Directive
         {
             get
             {
-                return _Directive;
+                return _directive;
             }
         }
    
-        private NonTerminal _EmbeddedCs;
+        private NonTerminal _embeddedCs;
         public NonTerminal EmbeddedCs
         {
             get
             {
-                return _EmbeddedCs;
+                return _embeddedCs;
             }
         }
-        private NonTerminal _EmbeddedExpr;
+        private NonTerminal _embeddedExpr;
         public NonTerminal EmbeddedExpr
         {
             get
             {
-                return _EmbeddedExpr;
+                return _embeddedExpr;
             }
         }
-        private NonTerminal _EmbeddedClassMember;
+        private NonTerminal _embeddedClassMember;
         public NonTerminal EmbeddedClassMember
         {
             get
             {
-                return _EmbeddedClassMember;
+                return _embeddedClassMember;
             }
         }
-        private IdentifierTerminal _DirectiveName;
+        private IdentifierTerminal _directiveName;
         public IdentifierTerminal DirectiveName
         {
             get
             {
-                return _DirectiveName;
+                return _directiveName;
             }
         }
-        private NonTerminal _AttributeList;
+        private NonTerminal _attributeList;
         public NonTerminal AttributeList
         {
             get
             {
-                return _AttributeList;
+                return _attributeList;
             }
         }
-        private KeyTerm _AttributeConnector;
+        private KeyTerm _attributeConnector;
         public KeyTerm AttributeConnector
         {
             get
             {
-                return _AttributeConnector;
+                return _attributeConnector;
             }
         }
-        private IdentifierTerminal _AttributeName;
+        private IdentifierTerminal _attributeName;
         public IdentifierTerminal AttributeName
         {
             get
             {
-                return _AttributeName;
+                return _attributeName;
             }
         }
-        private StringLiteral _AttributeValue;
+        private StringLiteral _attributeValue;
         public StringLiteral AttributeValue
         {
             get
             {
-                return _AttributeValue;
+                return _attributeValue;
             }
         }
-        private NonTerminal _Attribute;
+        private NonTerminal _attribute;
         public NonTerminal Attribute
         {
             get
             {
-                return _Attribute;
+                return _attribute;
             }
         }
-        private KeyTerm _BeginSegment;
+        private readonly KeyTerm _beginSegment;
         public KeyTerm BeginSegment
         {
             get
             {
-                return _BeginSegment;
+                return _beginSegment;
             }
         }
-        private KeyTerm _EndSegment;
+        private readonly KeyTerm _endSegment;
         public KeyTerm EndSegment
         {
             get
             {
-                return _EndSegment;
+                return _endSegment;
             }
         }
-        private KeyTerm _EmbeddedClassMemberPrefix;
+        private KeyTerm _embeddedClassMemberPrefix;
         public KeyTerm EmbeddedClassMemberPrefix
         {
             get
             {
-                return _EmbeddedClassMemberPrefix;
+                return _embeddedClassMemberPrefix;
             }
         }
-        private FreeTextLiteral _EmbeddedClassMemberText;
+        private FreeTextLiteral _embeddedClassMemberText;
         public FreeTextLiteral EmbeddedClassMemberText
         {
             get
             {
-                return _EmbeddedClassMemberText;
+                return _embeddedClassMemberText;
             }
         }
-        private FreeTextLiteral _ExpandedIncludeText;
+        private FreeTextLiteral _expandedIncludeText;
         public FreeTextLiteral ExpandedIncludeText
         {
             get
             {
-                return _ExpandedIncludeText;
+                return _expandedIncludeText;
             }
         }
         public static void CheckNodeType(ParseTreeNode node, BnfTerm term)
@@ -146,17 +147,17 @@ namespace T4ToRgen
         }
         private NonTerminal InitDirective(KeyTerm beginSegment, KeyTerm endSegment)
         {
-            _DirectiveName = new IdentifierTerminal("directiveName");
-            _ExpandedIncludeText = new FreeTextLiteral("expandedIncludeText");
-            _AttributeConnector = ToTerm("=");
-            _AttributeName = new IdentifierTerminal("attributeName") { SkipsWhitespaceAfter = false };
-            _AttributeValue = new StringLiteral("attributeValue", "\"");
-            _Attribute = new NonTerminal("attribute") {
-                    Rule = _AttributeName + _AttributeConnector + _AttributeValue };
-            _AttributeList = new NonTerminal("attributeList");
-            _AttributeList.Rule = MakePlusRule(_AttributeList, _Attribute);
+            _directiveName = new IdentifierTerminal("directiveName");
+            _expandedIncludeText = new FreeTextLiteral("expandedIncludeText");
+            _attributeConnector = ToTerm("=");
+            _attributeName = new IdentifierTerminal("attributeName") { SkipsWhitespaceAfter = false };
+            _attributeValue = new StringLiteral("attributeValue", "\"");
+            _attribute = new NonTerminal("attribute") {
+                    Rule = _attributeName + _attributeConnector + _attributeValue };
+            _attributeList = new NonTerminal("attributeList");
+            _attributeList.Rule = MakePlusRule(_attributeList, _attribute);
             var directivePrefix = ToTerm("@");
-            _Directive = new NonTerminal("directive") {
+            _directive = new NonTerminal("directive") {
                         Rule = beginSegment + directivePrefix + DirectiveName + AttributeList + endSegment };
             return Directive;
         }
@@ -165,36 +166,38 @@ namespace T4ToRgen
             var regexNonDirective = new RegexBasedTerminal("NonDirectivePrefix", "(?![+=@])") {
                             ErrorAlias = "<#@ can only be declared before any text or embedded code",
                             SkipsWhitespaceAfter = false };
-            _EmbeddedCs = new NonTerminal("embeddedCs");
+            _embeddedCs = new NonTerminal("embeddedCs");
             var embeddedCsText = new FreeTextLiteral("embeddedCsText", endSegment.Text);
             var stringLit = new StringLiteral("embeddedCsText");
             stringLit.AddStartEnd(beginSegment.Text, endSegment.Text, StringOptions.AllowsLineBreak);
-            _EmbeddedCs.Rule = beginSegment + regexNonDirective + embeddedCsText + endSegment;
+            _embeddedCs.Rule = beginSegment + regexNonDirective + embeddedCsText + endSegment;
             return EmbeddedCs;
         }
         private NonTerminal InitEmbeddedExpr(KeyTerm beginSegment, KeyTerm endSegment)
         {
-            _EmbeddedExpr = new NonTerminal("embeddedExpr");
+            _embeddedExpr = new NonTerminal("embeddedExpr");
             var embeddedExprText = new FreeTextLiteral("embeddedCsText", endSegment.Text);
             var embeddedExprPrefix = ToTerm("=");
-            _EmbeddedExpr.Rule = beginSegment + embeddedExprPrefix + embeddedExprText + endSegment;
+            _embeddedExpr.Rule = beginSegment + embeddedExprPrefix + embeddedExprText + endSegment;
             return EmbeddedExpr;
         }
         private NonTerminal InitEmbeddedClassMember(KeyTerm beginSegment, KeyTerm endSegment)
         {
-            _EmbeddedClassMemberText = new FreeTextLiteral("embeddedClassMemberText", endSegment.Text);
-            _EmbeddedClassMemberPrefix = ToTerm("+");
-            _EmbeddedClassMember = new NonTerminal("embeddedClassMember");
-            _EmbeddedClassMember.Rule = beginSegment + EmbeddedClassMemberPrefix + EmbeddedClassMemberText + endSegment;
+            _embeddedClassMemberText = new FreeTextLiteral("embeddedClassMemberText", endSegment.Text);
+            _embeddedClassMemberPrefix = ToTerm("+");
+            _embeddedClassMember = new NonTerminal("embeddedClassMember")
+            {
+                Rule = beginSegment + EmbeddedClassMemberPrefix + EmbeddedClassMemberText + endSegment
+            };
             return EmbeddedClassMember;
         }
         public T4Grammar()
             : base(false)
         {
-            _BeginSegment = ToTerm("<#", "beginSegment");
-            _BeginSegment.SkipsWhitespaceAfter = false;
-            _EndSegment = ToTerm("#>", "endSegment");
-            _EndSegment.SkipsWhitespaceAfter = false;
+            _beginSegment = ToTerm("<#", "beginSegment");
+            _beginSegment.SkipsWhitespaceAfter = false;
+            _endSegment = ToTerm("#>", "endSegment");
+            _endSegment.SkipsWhitespaceAfter = false;
             var directive = InitDirective(BeginSegment, EndSegment);
             var embeddedCs = InitEmbeddedCs(BeginSegment, EndSegment);
             var embeddedClassMember = InitEmbeddedClassMember(BeginSegment, EndSegment);
@@ -203,8 +206,7 @@ namespace T4ToRgen
             var segment = new NonTerminal("segment") { Rule = staticText | embeddedCs | embeddedExpr | embeddedClassMember | directive };
             var content = new NonTerminal("content");
             content.Rule = MakeStarRule(content, segment);
-            var root = new NonTerminal("root");
-            root.Rule = content;
+            var root = new NonTerminal("root") {Rule = content};
             Root = root;
         }
         public ParseTreeNode GetContentNode(ParseTree parseTree)

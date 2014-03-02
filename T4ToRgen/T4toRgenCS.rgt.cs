@@ -1,16 +1,14 @@
-﻿using System.Collections.Generic;
-using System;
-using System.Linq;
+﻿using System;
 using Irony.Parsing;
 using Kodeo.Reegenerator.Generators;
 using System.IO;
 using System.Windows.Forms;
-
+using T4ToRgen.Extension;
 
 
 namespace T4ToRgen
 {
-    public partial class T4ToRgenCS
+    public partial class T4ToRgenCs
     {
    
         [TemplateProperty(Description = "In addition to directory specified by VS in registry, also look for included T4 in these directories")]
@@ -53,7 +51,7 @@ namespace T4ToRgen
             File.WriteAllText(codeBehindFile.FullName, writers.GenCodeFile());
             rgenProjItem.ProjectItems.AddFromFile(codeBehindFile.FullName);
             var msg = string.Format("File {0} and {1} has been generated", rgenFile.Name, codeBehindFile.Name);
-            var res = new RenderResults(msg.ToString());
+            var res = new RenderResults(msg);
             return res;
         }
     }

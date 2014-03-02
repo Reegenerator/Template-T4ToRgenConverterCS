@@ -26,7 +26,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:T4ToRgen.DebugExtensions.DebugMember``1(System.Collections.Generic.IEnumerable{``0},System.String)">
+        <member name="M:T4ToRgen.Extension.DebugExtensions.DebugMember``1(System.Collections.Generic.IEnumerable{``0},System.String)">
             <summary>
             Get string representation of Type.Member value
             </summary>
@@ -36,7 +36,7 @@
             <returns></returns>
             <remarks></remarks>
         </member>
-        <member name="M:T4ToRgen.DebugExtensions.DebugMembers``1(System.Collections.Generic.IEnumerable{System.Object},System.String)">
+        <member name="M:T4ToRgen.Extension.DebugExtensions.DebugMembers``1(System.Collections.Generic.IEnumerable{System.Object},System.String)">
             <summary>
             Get string value of specified member of each item in a list as type T
             </summary>
@@ -46,7 +46,7 @@
             <returns></returns>
             <remarks></remarks>
         </member>
-        <member name="M:T4ToRgen.DebugExtensions.DebugMembers(System.Collections.Generic.IEnumerable{System.Object},System.String)">
+        <member name="M:T4ToRgen.Extension.DebugExtensions.DebugMembers(System.Collections.Generic.IEnumerable{System.Object},System.String)">
             <summary>
             Get value of specified member of each item in a list as string array
             </summary>
@@ -55,7 +55,7 @@
             <returns></returns>
             <remarks></remarks>
         </member>
-        <member name="M:T4ToRgen.DebugExtensions.DebugMembers(System.Collections.Generic.IEnumerable{System.Object},System.String,System.String)">
+        <member name="M:T4ToRgen.Extension.DebugExtensions.DebugMembers(System.Collections.Generic.IEnumerable{System.Object},System.String,System.String)">
             <summary>
             Like DebugMember, but with two members
             </summary>
@@ -65,7 +65,7 @@
             <returns></returns>
             <remarks></remarks>
         </member>
-        <member name="M:T4ToRgen.DebugExtensions.DP(EnvDTE.TextPoint,System.Int32,Kodeo.Reegenerator.Generators.OutputPaneTraceListener)">
+        <member name="M:T4ToRgen.Extension.DebugExtensions.Dp(EnvDTE.TextPoint,System.Int32,Kodeo.Reegenerator.Generators.OutputPaneTraceListener)">
             <summary>
             Alias for DebugPosition
             </summary>
@@ -75,7 +75,7 @@
             <returns></returns>
             <remarks></remarks>
         </member>
-        <member name="M:T4ToRgen.DebugExtensions.DebugPosition(EnvDTE.TextPoint,System.Int32,Kodeo.Reegenerator.Generators.OutputPaneTraceListener)">
+        <member name="M:T4ToRgen.Extension.DebugExtensions.DebugPosition(EnvDTE.TextPoint,System.Int32,Kodeo.Reegenerator.Generators.OutputPaneTraceListener)">
             <summary>
             Show the position of a textpoint by printing the surrounding text
             </summary>
@@ -85,13 +85,13 @@
             <returns></returns>
             <remarks></remarks>
         </member>
-        <member name="M:T4ToRgen.DebugExtensions.DebugHere">
+        <member name="M:T4ToRgen.Extension.DebugExtensions.DebugHere">
             <summary>
             Launch debugger or Break if it's already attached
             </summary>
             <remarks></remarks>
         </member>
-        <member name="M:T4ToRgen.Extensions.DottedFullName(System.Type)">
+        <member name="M:T4ToRgen.Extension.Extensions.DottedFullName(System.Type)">
             <summary>
             Returns full name delimited by only dots (and no +(plus sign))
             </summary>
@@ -99,7 +99,7 @@
             <returns></returns>
             <remarks>Nested class is separated with +, while CodeClass delimit them using dots</remarks>
         </member>
-        <member name="M:T4ToRgen.Extensions.AsElement``1(``0)">
+        <member name="M:T4ToRgen.Extension.Extensions.AsElement``1(``0)">
             <summary>
             Use this to convert Code element into a more generic CodeElement and get CodeElement based extensions
             </summary>
@@ -108,7 +108,7 @@
             <returns></returns>
             <remarks></remarks>
         </member>
-        <member name="M:T4ToRgen.Extensions.GetCustomAttributes(EnvDTE80.CodeElement2)">
+        <member name="M:T4ToRgen.Extension.Extensions.GetCustomAttributes(EnvDTE80.CodeElement2)">
             <summary>
             Get Custom Attributes
             </summary>
@@ -119,14 +119,14 @@
             Not using reflection because it requires successful build
             </remarks>
         </member>
-        <member name="M:T4ToRgen.Extensions.GetAncestorClasses(EnvDTE80.CodeClass2)">
+        <member name="M:T4ToRgen.Extension.Extensions.GetAncestorClasses(EnvDTE80.CodeClass2)">
             <summary>
             Get Bases recursively
             </summary>
             <returns></returns>
             <remarks></remarks>
         </member>
-        <member name="M:T4ToRgen.Extensions.GetCommentStartPoint(EnvDTE.TextPoint)">
+        <member name="M:T4ToRgen.Extension.Extensions.GetCommentStartPointCs(EnvDTE.TextPoint)">
             <summary>
             Get to the beginning of doc comments for startPoint
             </summary>
@@ -137,7 +137,7 @@
             If we need to insert some text before a code element that has doc comments we need to go to the beggining of the comments.
             </remarks>
         </member>
-        <member name="M:T4ToRgen.Extensions.GetTypeFromProject(EnvDTE.ProjectItem,System.String)">
+        <member name="M:T4ToRgen.Extension.Extensions.GetTypeFromProject(EnvDTE.ProjectItem,System.String)">
             <summary>
             Returns a type from an assembly reference by ProjectItem.Project. Cached.
             </summary>
@@ -146,7 +146,7 @@
             <returns></returns>
             <remarks></remarks>
         </member>
-        <member name="M:T4ToRgen.Extensions.ToPropertyInfo(EnvDTE80.CodeProperty2)">
+        <member name="M:T4ToRgen.Extension.Extensions.ToPropertyInfo(EnvDTE80.CodeProperty2)">
             <summary>
             Convert CodeProperty2 to PropertyInfo. Cached
             </summary>
@@ -154,7 +154,7 @@
             <returns></returns>
             <remarks></remarks>
         </member>
-        <member name="M:T4ToRgen.Extensions.GetAssemblyPath(EnvDTE.Project)">
+        <member name="M:T4ToRgen.Extension.Extensions.GetAssemblyPath(EnvDTE.Project)">
             <summary>
             Currently unused. If we require a succesful build, a project that requires succesful generation would never build, catch-22
             </summary>
@@ -162,7 +162,7 @@
             <returns></returns>
             <remarks></remarks>
         </member>
-        <member name="M:T4ToRgen.Extensions.ConvertFromString(System.Type,System.String)">
+        <member name="M:T4ToRgen.Extension.Extensions.ConvertFromString(System.Type,System.String)">
             <summary>
             Create type instance from string
             </summary>
@@ -171,7 +171,7 @@
             <returns></returns>
             <remarks></remarks>
         </member>
-        <member name="M:T4ToRgen.Extensions.SetValueFromString(System.Reflection.PropertyInfo,System.Object,System.String)">
+        <member name="M:T4ToRgen.Extension.Extensions.SetValueFromString(System.Reflection.PropertyInfo,System.Object,System.String)">
             <summary>
             Set property value from string representation
             </summary>
@@ -180,7 +180,7 @@
             <param name="value"></param>
             <remarks></remarks>
         </member>
-        <member name="P:T4ToRgen.Extensions.DocCommentRegex">
+        <member name="P:T4ToRgen.Extension.Extensions.CsDocCommentRegex">
             <summary>
             Lazy Regex property to match doc comments
             </summary>
@@ -194,7 +194,7 @@
             </summary>
             <remarks></remarks>
         </member>
-        <member name="M:T4ToRgen.ProjectSolutionExtensions.GetName(EnvDTE.Solution)">
+        <member name="M:T4ToRgen.Extension.ProjectSolutionExtensions.GetName(EnvDTE.Solution)">
             <summary>
             Get solution name
             </summary>
@@ -202,7 +202,7 @@
             <returns></returns>
             <remarks></remarks>
         </member>
-        <member name="M:T4ToRgen.ProjectSolutionExtensions.Solution(EnvDTE.Project)">
+        <member name="M:T4ToRgen.Extension.ProjectSolutionExtensions.Solution(EnvDTE.Project)">
             <summary>
             Get solution
             </summary>
@@ -210,7 +210,7 @@
             <returns></returns>
             <remarks></remarks>
         </member>
-        <member name="M:T4ToRgen.ProjectSolutionExtensions.GetNodePath(EnvDTE.Project)">
+        <member name="M:T4ToRgen.Extension.ProjectSolutionExtensions.GetNodePath(EnvDTE.Project)">
             <summary>
             Get path to project node. To be used to select the node in Solution Explorer
             </summary>
@@ -218,7 +218,7 @@
             <returns></returns>
             <remarks></remarks>
         </member>
-        <member name="M:T4ToRgen.ProjectSolutionExtensions.GetNodePath(EnvDTE.ProjectItem)">
+        <member name="M:T4ToRgen.Extension.ProjectSolutionExtensions.GetNodePath(EnvDTE.ProjectItem)">
             <summary>
             Get path to project item node. To be used to select the node in Solution Explorer
             </summary>
@@ -226,20 +226,20 @@
             <returns></returns>
             <remarks></remarks>
         </member>
-        <member name="M:T4ToRgen.ProjectSolutionExtensions.SelectSolutionExplorerNode(EnvDTE.ProjectItem)">
+        <member name="M:T4ToRgen.Extension.ProjectSolutionExtensions.SelectSolutionExplorerNode(EnvDTE.ProjectItem)">
             <summary>
             Selects project item in Solution Explorer
             </summary>
             <param name="projectItem"></param>
             <remarks></remarks>
         </member>
-        <member name="M:T4ToRgen.ProjectSolutionExtensions.SelectSolutionExplorerNode(EnvDTE80.DTE2,System.String)">
+        <member name="M:T4ToRgen.Extension.ProjectSolutionExtensions.SelectSolutionExplorerNode(EnvDTE80.DTE2,System.String)">
             <summary>
             Selects project item in Solution Explorer
             </summary>
             <remarks></remarks>
         </member>
-        <member name="M:T4ToRgen.StringExtensions.Conjoin(System.String,System.String,System.String)">
+        <member name="M:T4ToRgen.Extension.StringExtensions.Conjoin(System.String,System.String,System.String)">
             <summary>
             Join two strings , only if both are not empty strings
             </summary>
@@ -249,7 +249,7 @@
             <returns></returns>
             <remarks></remarks>
         </member>
-        <member name="M:T4ToRgen.StringExtensions.IsEqualText(System.String,System.String)">
+        <member name="M:T4ToRgen.Extension.StringExtensions.IsEqualText(System.String,System.String)">
             <summary>
             Compares two strings using StringComparison.InvariantCultureIgnoreCase
             </summary>
@@ -284,7 +284,7 @@
             </summary>
             <remarks></remarks>
         </member>
-        <member name="M:T4ToRgen.TextPointExtensions.InsertAndFormat(EnvDTE.TextPoint,System.String)">
+        <member name="M:T4ToRgen.Extension.TextPointExtensions.InsertAndFormat(EnvDTE.TextPoint,System.String)">
             <summary>
             Inserts text and format the text (=Format Selection command)
             </summary>
@@ -293,7 +293,7 @@
             <returns></returns>
             <remarks></remarks>
         </member>
-        <member name="M:T4ToRgen.TextPointExtensions.CharRightExact(EnvDTE.EditPoint,System.Int32)">
+        <member name="M:T4ToRgen.Extension.TextPointExtensions.CharRightExact(EnvDTE.EditPoint,System.Int32)">
             <summary>
             Unlike  CharRight, CharRightExact counts newline \r\n as two instead of one char.
             </summary>
@@ -305,7 +305,7 @@
             since we get the character count from regular regex not the DTE find, the char count is slightly off
             </remarks>
         </member>
-        <member name="M:T4ToRgen.TextPointExtensions.CharLeftExact(EnvDTE.EditPoint,System.Int32)">
+        <member name="M:T4ToRgen.Extension.TextPointExtensions.CharLeftExact(EnvDTE.EditPoint,System.Int32)">
             <summary>
             See CharMoveExact
             </summary>
@@ -314,7 +314,7 @@
             <returns></returns>
             <remarks>See CharMoveExact</remarks>
         </member>
-        <member name="M:T4ToRgen.TextPointExtensions.CharMoveExact(EnvDTE.EditPoint,System.Int32,System.Int32)">
+        <member name="M:T4ToRgen.Extension.TextPointExtensions.CharMoveExact(EnvDTE.EditPoint,System.Int32,System.Int32)">
             <summary>
             Moves cursor/editpoint exactly.
             </summary>

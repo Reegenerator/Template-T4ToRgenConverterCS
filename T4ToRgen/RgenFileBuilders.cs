@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System;
-using System.Linq;
 using System.Text;
 
 
@@ -14,11 +12,11 @@ namespace T4ToRgen
     {
         public RgenFileBuilders(string className)
         {
-            _TemplateFile = new StringBuilder();
-            _ClassMembers = new StringBuilder();
+            _templateFile = new StringBuilder();
+            _classMembers = new StringBuilder();
             _className = className;
         }
-        private string _className;
+        private readonly string _className;
         public string ClassName
         {
             get
@@ -26,33 +24,26 @@ namespace T4ToRgen
                 return _className;
             }
         }
-        private StringBuilder _TemplateFile;
+        private readonly StringBuilder _templateFile;
         public StringBuilder TemplateFile
         {
             get
             {
-                return _TemplateFile;
+                return _templateFile;
             }
         }
-        private StringBuilder _ClassMembers;
+        private readonly StringBuilder _classMembers;
         public StringBuilder ClassMembers
         {
             get
             {
-                return _ClassMembers;
+                return _classMembers;
             }
         }
-        private List<string> _ImportedNamespaces;
+        private List<string> _importedNamespaces;
         public List<string> ImportedNamespaces
         {
-            get
-            {
-                if (_ImportedNamespaces == null)
-                {
-                    _ImportedNamespaces = new List<string>();
-                }
-                return _ImportedNamespaces;
-            }
+            get { return _importedNamespaces ?? (_importedNamespaces = new List<string>()); }
         }
         public string GenCodeFile()
         {

@@ -5,64 +5,55 @@ using EnvDTE80;
 using Kodeo.Reegenerator.Generators;
 using EnvDTE;
 using System.Text;
-
-
-
-
+using T4ToRgen.Extension;
 
 
 namespace T4ToRgen
 {
     public abstract class CodeRendererEx : CodeRenderer
     {
-        private string SavedOutput;
+        private string _savedOutput;
         public readonly string Newline = Environment.NewLine;
-        public DTE DTE
+        public DTE Dte
         {
             get
             {
-                return base.ProjectItem.DteObject.DTE;
+                return ProjectItem.DteObject.DTE;
             }
         }
-        public DTE2 DTE2
+        public DTE2 Dte2
         {
             get
             {
-                return ((DTE2) DTE);
+                return ((DTE2) Dte);
             }
         }
         public bool IsVs2013
         {
             get
             {
-                return DTE2.Version == "12.0";
+                return Dte2.Version == "12.0";
             }
         }
         public bool IsVs2012
         {
             get
             {
-                return DTE2.Version == "11.0";
+                return Dte2.Version == "11.0";
             }
         }
-        public StringBuilder _OutputBuilder;
+
+        private StringBuilder _outputBuilder;
         public StringBuilder OutputBuilder
         {
-            get
-            {
-                if (_OutputBuilder == null)
-                {
-                    _OutputBuilder = Output.GetStringBuilder();
-                }
-                return _OutputBuilder;
-            }
+            get { return _outputBuilder ?? (_outputBuilder = Output.GetStringBuilder()); }
         }
         public CodeElement[] GetCodeElementsAtCursor(vsCMElement? kind = null)
         {
-            var sel = (TextSelection) DTE.ActiveDocument.Selection;
+            var sel = (TextSelection) Dte.ActiveDocument.Selection;
             var pnt = (TextPoint) sel.ActivePoint;
             var fcm =
-                DTE.ActiveDocument.ProjectItem.FileCodeModel;
+                Dte.ActiveDocument.ProjectItem.FileCodeModel;
             var res = GetCodeElementsAtPoint(fcm, pnt);
             if (kind.HasValue)
             {
@@ -90,40 +81,41 @@ namespace T4ToRgen
         }
         public string RenderToString()
         {
-            return ASCIIEncoding.ASCII.GetString(Render().GeneratedCode);
+            return Encoding.ASCII.GetString(Render().GeneratedCode);
         }
         public CodeElement[] GetCodeElementsAtPoint(FileCodeModel fcm, TextPoint pnt)
         {
             var res = new List<CodeElement>();
-            var elem = default(CodeElement);
-            var scope = default(vsCMElement);
-            foreach (vsCMElement tempLoopVar_scope in Enum.GetValues(scope.GetType()))
+            foreach (var scope in Enum.GetValues(typeof(vsCMElement)).Cast<vsCMElement>())
             {
-                scope = tempLoopVar_scope;
+                
                 try
                 {
-                    elem = fcm.CodeElementFromPoint(pnt, scope);
+                    var elem = fcm.CodeElementFromPoint(pnt, scope);
                     if (elem != null)
                     {
                         res.Add(elem);
                     }
                 }
+                // ReSharper disable once EmptyGeneralCatchClause
                 catch (Exception)
                 {
+                    //don’t do anything -
+                    //this is expected when no code elements are in scope
                 }
             }
             return res.ToArray();
         }
         public TextSelection GetTextSelection()
         {
-            return ((TextSelection) DTE.ActiveDocument.Selection);
+            return ((TextSelection) Dte.ActiveDocument.Selection);
         }
         public string SaveAndClearOutput()
         {
-            OutputBuilder.Insert(0, SavedOutput);
-            SavedOutput = Output.ToString();
+            OutputBuilder.Insert(0, _savedOutput);
+            _savedOutput = Output.ToString();
             OutputBuilder.Clear();
-            return SavedOutput;
+            return _savedOutput;
         }
         /// <summary>
         /// Instead of generating to a file. This is a workaround to return the value as string
@@ -150,8 +142,8 @@ namespace T4ToRgen
         /// <remarks></remarks>
         public string RestoreOutput()
         {
-            var saved = SavedOutput;
-            SavedOutput = string.Empty;
+            var saved = _savedOutput;
+            _savedOutput = string.Empty;
             var curr = Output.ToString();
             OutputBuilder.Clear();
             OutputBuilder.Append(saved);

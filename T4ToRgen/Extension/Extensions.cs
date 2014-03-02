@@ -1,5 +1,3 @@
-using EnvDTE;
-using EnvDTE80;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -13,17 +11,18 @@ using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Linq;
+using EnvDTE;
+using EnvDTE80;
 using Expression = System.Linq.Expressions.Expression;
 using ProjectItem = Kodeo.Reegenerator.Wrappers.ProjectItem;
 using Solution = Kodeo.Reegenerator.Wrappers.Solution;
 
-
-namespace T4ToRgen
+namespace T4ToRgen.Extension
 {
     internal static class Extensions
     {
         public const RegexOptions DefaultRegexOption = RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace | RegexOptions.Singleline;
-        private static ConcurrentDictionary<CodeClass, Type> ToPropertyInfo_ClassCache = new ConcurrentDictionary<CodeClass, Type>();
+        private static readonly ConcurrentDictionary<CodeClass, Type> ToPropertyInfoClassCache = new ConcurrentDictionary<CodeClass, Type>();
 
         
         public static IEnumerable<CodeClass2> GetClassesEx(this ProjectItem item)
@@ -97,7 +96,7 @@ namespace T4ToRgen
         
         public static CodeAttribute2 GetCustomAttribute(this CodeElement2 cc, Type attrType)
         {
-            var res = cc.GetCustomAttributes().Where(x => x.AsElement().IsEqual(attrType)).FirstOrDefault();
+            var res = cc.GetCustomAttributes().FirstOrDefault(x => x.AsElement().IsEqual(attrType));
             return res;
         }
         /// <summary>
@@ -117,10 +116,10 @@ namespace T4ToRgen
             {
                 return prop.Attributes.Cast<CodeAttribute2>();
             }
-            var Func = ce as CodeFunction2;
-            if (Func != null)
+            var func = ce as CodeFunction2;
+            if (func != null)
             {
-                return Func.Attributes.Cast<CodeAttribute2>();
+                return func.Attributes.Cast<CodeAttribute2>();
             }
             var cc = ce as CodeClass2;
             if (cc != null)
@@ -140,22 +139,24 @@ namespace T4ToRgen
         
         public static IEnumerable<CustomAttributeData> GetCustomAttributes(this CodeType ct)
         {
-            return Type.GetType(ct.FullName).CustomAttributes;
+            var type = Type.GetType(ct.FullName);
+            return type != null ? type.CustomAttributes : null;
         }
-        
+
         public static IEnumerable<CustomAttributeData> GetCustomAttributes(this CodeClass cc)
         {
-            return Type.GetType(cc.FullName).CustomAttributes;
+            var type = Type.GetType(cc.FullName);
+            return type != null ? type.CustomAttributes : null;
         }
-        
+
         public static CustomAttributeData GetCustomAttribute(this CodeType ct, Type attrType)
         {
-            return ct.GetCustomAttributes().Where(x => x.AttributeType == attrType).FirstOrDefault();
+            return ct.GetCustomAttributes().FirstOrDefault(x => x.AttributeType == attrType);
         }
         
         public static CustomAttributeData GetCustomAttribute(this CodeClass cc, Type attrType)
         {
-            return cc.GetCustomAttributes().Where(x => x.AttributeType == attrType).FirstOrDefault();
+            return cc.GetCustomAttributes().FirstOrDefault(x => x.AttributeType == attrType);
         }
         
         public static IEnumerable<CodeAttributeArgument> GetCodeAttributeArguments(this CodeAttribute2 cattr)
@@ -166,11 +167,11 @@ namespace T4ToRgen
             }
             return cattr.Arguments.Cast<CodeAttributeArgument>();
         }
-        private static Type IsEqual_attrType = typeof(Attribute);
+        private static readonly Type IsEqualAttrType = typeof(Attribute);
         public static bool IsEqual(this CodeElement2 ele, Type type)
         {
             return ele.FullName == type.FullName || ele.Name == type.Name ||
-                (type.IsSubclassOf(IsEqual_attrType) &&
+                (type.IsSubclassOf(IsEqualAttrType) &&
                 (ele.FullName + "Attribute" == type.FullName || ele.Name + "Attribute" == type.Name)
                 );
         }
@@ -252,10 +253,10 @@ namespace T4ToRgen
             return p.CreateEditPoint().GetText(cls.GetEndPoint(part));
         }
         private readonly static string InterfaceImplementationPattern = XElement.Parse("<String><![CDATA[                           " + "^.*?\\sAs\\s.*?(?<impl>Implements\\s.*?)$" + "]]></String>").Value;
-        private static Regex GetInterfaceImplementation_regex = new Regex(InterfaceImplementationPattern, DefaultRegexOption);
+        private static readonly Regex GetInterfaceImplementationRegex = new Regex(InterfaceImplementationPattern, DefaultRegexOption);
         public static string GetInterfaceImplementation(this CodeProperty2 prop)
         {
-            var g = GetInterfaceImplementation_regex.Match(Convert.ToString(prop.GetText(vsCMPart.vsCMPartHeader))).Groups["impl"];
+            var g = GetInterfaceImplementationRegex.Match(Convert.ToString(prop.GetText(vsCMPart.vsCMPartHeader))).Groups["impl"];
             if (g.Success)
             {
                 return " " + g.Value;
@@ -265,36 +266,33 @@ namespace T4ToRgen
         
         public static TextPoint GetAttributeStartPoint(this CodeProperty2 prop)
         {
+            // ReSharper disable once RedundantArgumentDefaultValue
             return prop.GetStartPoint(vsCMPart.vsCMPartWholeWithAttributes);
         }
-        private static Regex _DocCommentRegex;
+        private static Regex _docCommentRegex;
         /// <summary>
         /// Lazy Regex property to match doc comments
         /// </summary>
         /// <value></value>
         /// <returns></returns>
         /// <remarks></remarks>
-        public static Regex DocCommentRegex
+        public static Regex CsDocCommentRegex
         {
             get
             {
-                const string docCommentPattern = "\\s\'\'\'";
-                if (_DocCommentRegex == null)
-                {
-                    _DocCommentRegex = new Regex(docCommentPattern);
-                }
-                return _DocCommentRegex;
+                const string docCommentPattern = @"\s\\\";
+                return _docCommentRegex ?? (_docCommentRegex = new Regex(docCommentPattern));
             }
         }
         
-        public static EditPoint GetCommentStartPoint(this CodeElement ce)
+        public static EditPoint GetCommentStartPointCs(this CodeElement ce)
         {
-            return ce.GetStartPoint(vsCMPart.vsCMPartHeaderWithAttributes).GetCommentStartPoint();
+            return ce.GetStartPoint(vsCMPart.vsCMPartHeaderWithAttributes).GetCommentStartPointCs();
         }
         
-        public static EditPoint GetCommentStartPoint(this CodeProperty2 ce)
+        public static EditPoint GetCommentStartPointCs(this CodeProperty2 ce)
         {
-            return ce.GetStartPoint(vsCMPart.vsCMPartHeaderWithAttributes).GetCommentStartPoint();
+            return ce.GetStartPoint(vsCMPart.vsCMPartHeaderWithAttributes).GetCommentStartPointCs();
         }
         /// <summary>
         /// Get to the beginning of doc comments for startPoint
@@ -307,23 +305,22 @@ namespace T4ToRgen
         /// </remarks>
         
         public static EditPoint
-        GetCommentStartPoint(this TextPoint startPoint)
+        GetCommentStartPointCs(this TextPoint startPoint)
         {
             var sp = startPoint.CreateEditPoint();
             do
             {
-                sp.LineUp(1);
+                sp.LineUp();
             }
-            while (DocCommentRegex.IsMatch(Convert.ToString(sp.GetLineText())));
-            sp.LineDown(1);
+            while (CsDocCommentRegex.IsMatch(Convert.ToString(sp.GetLineText())));
+            sp.LineDown();
             sp.StartOfLine();
             return sp;
         }
         
         public static string ToStringFormatted(this XElement xml)
         {
-            var settings = new XmlWriterSettings();
-            settings.OmitXmlDeclaration = true;
+            var settings = new XmlWriterSettings {OmitXmlDeclaration = true};
             var result = new StringBuilder();
             using (var writer = XmlWriter.Create(result, settings))
             {
@@ -350,16 +347,8 @@ namespace T4ToRgen
             {
                 return string.Empty;
             }
-            var currExpr = default(Expression);
             var convertedToObject = memberExpr.Body as UnaryExpression;
-            if (convertedToObject != null)
-            {
-                currExpr = convertedToObject.Operand;
-            }
-            else
-            {
-                currExpr = memberExpr.Body;
-            }
+            Expression currExpr = convertedToObject != null ? convertedToObject.Operand : memberExpr.Body;
             switch (currExpr.NodeType)
             {
                 case ExpressionType.MemberAccess:
@@ -373,10 +362,10 @@ namespace T4ToRgen
         {
             return FindAllDerivedTypes<T>(Assembly.GetAssembly(typeof(T)));
         }
-        public static List<Type> FindAllDerivedTypes<T>(Assembly Assembly)
+        public static List<Type> FindAllDerivedTypes<T>(Assembly assembly)
         {
             var derivedType = typeof(T);
-            return Assembly.GetTypes().Where(x => x != derivedType && derivedType.IsAssignableFrom(x)).ToList();
+            return assembly.GetTypes().Where(x => x != derivedType && derivedType.IsAssignableFrom(x)).ToList();
         }
         
         public static IEnumerable<CodeClass2> GetSubclasses(this CodeClass2 cc)
@@ -384,13 +373,13 @@ namespace T4ToRgen
             var fullname = cc.FullName;
             var list = new List<CodeClass2>();
             Kodeo.Reegenerator.Wrappers.CodeElement.TraverseSolutionForCodeElements<CodeClass2>(
-                cc.DTE.Solution, x => list.Add(x), x => x.FullName != fullname && x.IsDerivedFrom[fullname]);
+                cc.DTE.Solution, list.Add, x => x.FullName != fullname && x.IsDerivedFrom[fullname]);
             return list.ToArray();
         }
-        private static Regex RemoveEmptyLines_regex = new Regex("^\\s+$[\\r\\n]*", RegexOptions.Multiline);
+        private static readonly Regex RemoveEmptyLinesRegex = new Regex("^\\s+$[\\r\\n]*", RegexOptions.Multiline);
         public static string RemoveEmptyLines(this string s)
         {
-            return RemoveEmptyLines_regex.Replace(s, string.Empty);
+            return RemoveEmptyLinesRegex.Replace(s, string.Empty);
         }
         
         public static TResult SelectOrDefault<T, TResult>(this T obj, Func<T, TResult> selectFunc, TResult defaultValue = null) where T : class where TResult : class
@@ -402,7 +391,7 @@ namespace T4ToRgen
             return selectFunc(obj);
         }
 
-        private static Dictionary<string, Assembly> GetTypeFromProject_cache = new Dictionary<string, Assembly>();
+        private static readonly Dictionary<string, Assembly> GetTypeFromProjectCache = new Dictionary<string, Assembly>();
         /// <summary>
         /// Returns a type from an assembly reference by ProjectItem.Project. Cached.
         /// </summary>
@@ -413,11 +402,11 @@ namespace T4ToRgen
         public static Type GetTypeFromProject(this EnvDTE.ProjectItem pi, string typeName)
         {
             var path = pi.GetAssemblyPath();
-            if (!GetTypeFromProject_cache.ContainsKey(path))
+            if (!GetTypeFromProjectCache.ContainsKey(path))
             {
-                GetTypeFromProject_cache.Add(path, Assembly.LoadFrom(Convert.ToString(path)));
+                GetTypeFromProjectCache.Add(path, Assembly.LoadFrom(Convert.ToString(path)));
             }
-            var asm = GetTypeFromProject_cache[path];
+            var asm = GetTypeFromProjectCache[path];
             return asm.GetType(typeName);
         }
         
@@ -435,21 +424,14 @@ namespace T4ToRgen
         /// <remarks></remarks>
         public static PropertyInfo ToPropertyInfo(this CodeProperty2 prop)
         {
-            var classType = ToPropertyInfo_ClassCache.GetOrAdd(prop.Parent, (x) => prop.Parent.ToType());
+            var classType = ToPropertyInfoClassCache.GetOrAdd(prop.Parent, x => prop.Parent.ToType());
             return classType.GetProperty(prop.Name, BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
         }
         
         public static Assembly GetAssemblyOfProjectItem(this EnvDTE.ProjectItem pi)
         {
             var path = Convert.ToString(pi.GetAssemblyPath());
-            if (path != string.Empty)
-            {
-                return Assembly.LoadFrom(path);
-            }
-            else
-            {
-                return null;
-            }
+            return path != string.Empty ? Assembly.LoadFrom(path) : null;
         }
         
         public static string GetAssemblyPath(this EnvDTE.ProjectItem pi)
@@ -489,18 +471,15 @@ namespace T4ToRgen
             {
                 return defaultValue;
             }
-            var res = defaultValue;
+            T res;
             Enum.TryParse(Convert.ToString(qualifiedName.StripQualifier()), out res);
             return res;
         }
-        public static T GetOrInit<T>( ref T x, Func<T> initFunc)
+        public static T GetOrInit<T>( ref T x, Func<T> initFunc) where T:class 
         {
-            if (x == null)
-            {
-                x = initFunc();
-            }
-            return x;
+            return x ?? (x = initFunc());
         }
+
         /// <summary>
         /// Create type instance from string
         /// </summary>
@@ -523,21 +502,15 @@ namespace T4ToRgen
         
         public static void SetValueFromString(this PropertyInfo propInfo, object obj, string value)
         {
-            object setValue = null;
-            if (propInfo.PropertyType == typeof(Version))
-            {
-                setValue = Version.Parse(value);
-            }
-            else
-            {
-                setValue = propInfo.PropertyType.ConvertFromString(value);
-            }
+            var setValue = propInfo.PropertyType == typeof(Version) ? 
+                        Version.Parse(value) : 
+                        propInfo.PropertyType.ConvertFromString(value);
             propInfo.SetValue(obj, setValue);
         }
         
         public static void AddInterfaceIfNotExists(this CodeClass2 cls, string interfaceName)
         {
-            if (!cls.ImplementedInterfaces.OfType<CodeInterface>().Any(x => x.FullName == interfaceName))
+            if (cls.ImplementedInterfaces.OfType<CodeInterface>().All(x => x.FullName != interfaceName))
             {
                 cls.AddImplementedInterface(interfaceName, null);
             }

@@ -4,59 +4,56 @@ using System.Diagnostics;
 using System.Reflection;
 using EnvDTE80;
 
-
-namespace T4ToRgen
+namespace T4ToRgen.Extension
 {
     public class TypeCacheList
     {
-        readonly Dictionary<string, TypeCache> ByNameCache = new Dictionary<string, TypeCache>();
-        readonly Dictionary<Type, TypeCache> ByTypeCache = new Dictionary<Type, TypeCache>();
+        readonly Dictionary<string, TypeCache> _byNameCache = new Dictionary<string, TypeCache>();
+        readonly Dictionary<Type, TypeCache> _byTypeCache = new Dictionary<Type, TypeCache>();
         public bool Contains(Type type)
         {
-            return ByTypeCache.ContainsKey(type);
+            return _byTypeCache.ContainsKey(type);
         }
         public TypeCache ByName(CodeClass2 cc)
         {
-            if (!ByNameCache.ContainsKey(cc.FullName))
+            if (!_byNameCache.ContainsKey(cc.FullName))
             {
                 var tc = new TypeCache(cc.FullName);
-                ByNameCache.Add(cc.FullName, tc);
-                ByTypeCache.Add(tc.TypeInfo.AsType(), tc);
+                _byNameCache.Add(cc.FullName, tc);
+                _byTypeCache.Add(tc.TypeInfo.AsType(), tc);
             }
-            return ByNameCache[cc.FullName];
+            return _byNameCache[cc.FullName];
         }
         public TypeCache ByType(Type type)
         {
-            if (!ByTypeCache.ContainsKey(type))
+            if (!_byTypeCache.ContainsKey(type))
             {
                 var tc = new TypeCache(type);
-                ByNameCache.Add(tc.TypeInfo.Name, tc);
-                ByTypeCache.Add(tc.TypeInfo.AsType(), tc);
+                _byNameCache.Add(tc.TypeInfo.Name, tc);
+                _byTypeCache.Add(tc.TypeInfo.AsType(), tc);
             }
-            return ByTypeCache[type];
+            return _byTypeCache[type];
         }
     }
     public class TypeCache
     {
-        readonly Dictionary<string, MemberInfo> Cache;
+        readonly Dictionary<string, MemberInfo> _cache;
         public TypeInfo TypeInfo { get; set; }
-        public TypeCache(string typeName, bool caseSensitiveMembers = false)
-            : this(Type.GetType(typeName))
-        {
-        }
+        // ReSharper disable once UnusedParameter.Local
+        public TypeCache(string typeName, bool caseSensitiveMembers = false) : this(Type.GetType(typeName)){}
         public TypeCache(Type type, bool caseSensitiveMembers = false)
         {
             var comparer = caseSensitiveMembers ? StringComparer.Ordinal : StringComparer.OrdinalIgnoreCase;
-            Cache = new Dictionary<string, MemberInfo>(comparer);
+            _cache = new Dictionary<string, MemberInfo>(comparer);
             try
             {
                 TypeInfo = type.GetTypeInfo();
-                foreach (var m in TypeInfo.GetMembers((BindingFlags) (BindingFlags.Instance | BindingFlags.Public)))
+                foreach (var m in TypeInfo.GetMembers(BindingFlags.Instance | BindingFlags.Public))
                 {
                     //Prevent error on multiple cctor
-                    if (!Cache.ContainsKey(m.Name))
+                    if (!_cache.ContainsKey(m.Name))
                     {
-                        Cache.Add(m.Name, m);
+                        _cache.Add(m.Name, m);
                     }
                 }
             }
@@ -69,36 +66,36 @@ namespace T4ToRgen
         {
             get
             {
-                if (!Cache.ContainsKey(name))
+                if (!_cache.ContainsKey(name))
                 {
                     throw (new Exception(string.Format("Member {0} not found in {1}", name, TypeInfo.Name)));
                 }
-                return Cache[name];
+                return _cache[name];
             }
         }
         public IEnumerable<MemberInfo> GetMembers()
         {
-            return Cache.Values;
+            return _cache.Values;
         }
         public MemberInfo GetMember(string name)
         {
-            return Cache[name];
+            return _cache[name];
         }
         public bool Contains(string name)
         {
-            return Cache.ContainsKey(name);
+            return _cache.ContainsKey(name);
         }
         public MemberInfo TryGetMember(string key)
         {
-            MemberInfo value = null;
-            Cache.TryGetValue(key, out value);
+            MemberInfo value;
+            _cache.TryGetValue(key, out value);
             return value;
         }
         public void AddAlias(string name, string alternateName)
         {
             try
             {
-                Cache.Add(alternateName, this[name]);
+                _cache.Add(alternateName, this[name]);
             }
             catch (Exception)
             {

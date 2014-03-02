@@ -1,19 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.VisualBasic;
-using System.Collections;
-
-
-using System.Runtime.CompilerServices;
 using System.Text;
 using EnvDTE;
 using Kodeo.Reegenerator.Generators;
+using Microsoft.VisualBasic;
 using Microsoft.VisualBasic.CompilerServices;
 using Debugger = System.Diagnostics.Debugger;
 
-
-namespace T4ToRgen
+namespace T4ToRgen.Extension
 {
     internal static class DebugExtensions
     {
@@ -89,7 +84,7 @@ namespace T4ToRgen
         /// <returns></returns>
         /// <remarks></remarks>
         
-        public static string DP(this TextPoint point, int charCount = 10, OutputPaneTraceListener listener = null)
+        public static string Dp(this TextPoint point, int charCount = 10, OutputPaneTraceListener listener = null)
         {
             return DebugPosition(point, charCount, listener);
         }
@@ -112,7 +107,7 @@ namespace T4ToRgen
             }
             return Convert.ToString( text);
         }
-        private static bool DebugSkipped;
+        private static bool _debugSkipped;
         /// <summary>
         /// Launch debugger or Break if it's already attached
         /// </summary>
@@ -125,14 +120,14 @@ namespace T4ToRgen
             }
             else
             {
-                if (DebugSkipped)
+                if (_debugSkipped)
                 {
                     return ;
                 }
                 var launched = Debugger.Launch();
                 if (!launched)
                 {
-                    DebugSkipped = true;
+                    _debugSkipped = true;
                 }
             }
         }

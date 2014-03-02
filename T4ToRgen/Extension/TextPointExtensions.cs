@@ -1,13 +1,6 @@
-﻿using System.Collections.Generic;
-using System;
-using System.Linq;
+﻿using EnvDTE;
 
-
-using System.Runtime.CompilerServices;
-using EnvDTE;
-
-
-namespace T4ToRgen
+namespace T4ToRgen.Extension
 {
     public static class TextPointExtensions
     {
@@ -35,10 +28,10 @@ namespace T4ToRgen
         public static string GetLineTextAndNeighbor(this TextPoint point)
         {
             var start = point.CreateEditPoint();
-            start.LineUp(1);
+            start.LineUp();
             start.StartOfLine();
             var endP = point.CreateEditPoint();
-            endP.LineDown(1);
+            endP.LineDown();
             endP.EndOfLine();
             return start.GetText(endP);
         }
@@ -117,11 +110,11 @@ namespace T4ToRgen
                 }
                 if (direction < 0)
                 {
-                    point.CharLeft(1);
+                    point.CharLeft();
                 }
                 else
                 {
-                    point.CharRight(1);
+                    point.CharRight();
                 }
                 count--;
             }

@@ -1,13 +1,7 @@
-using System.Collections.Generic;
-using System;
 using System.Linq;
-
-
-using System.Runtime.CompilerServices;
 using Irony.Parsing;
 
-
-namespace T4ToRgen
+namespace T4ToRgen.Extension
 {
     internal static class IronyExtensions
     {
@@ -20,27 +14,13 @@ namespace T4ToRgen
         public static string FindChildText(this ParseTreeNode parentNode, BnfTerm term)
         {
             var child = parentNode.FindChildNode(term);
-            if (child == null)
-            {
-                return string.Empty;
-            }
-            else
-            {
-                return child.FindTokenAndGetText();
-            }
+            return child == null ? string.Empty : child.FindTokenAndGetText();
         }
         
         public static string FindChildValue(this ParseTreeNode parentNode, BnfTerm term)
         {
             var child = parentNode.FindChildNode(term);
-            if (child == null)
-            {
-                return string.Empty;
-            }
-            else
-            {
-                return child.FindToken().ValueString;
-            }
+            return child == null ? string.Empty : child.FindToken().ValueString;
         }
     }
 }

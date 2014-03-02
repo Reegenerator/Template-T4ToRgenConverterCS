@@ -6,15 +6,10 @@
 // -------------------------------------------------------
 namespace T4ToRgen
 {
-    using System;
-    using System.Linq;
-    using System.Collections.Generic;
-    
-    
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Reegenerator", "2.0.5.0")]
     [Kodeo.Reegenerator.Generators.TemplateDisplayAttribute(DisplayName="T4ToRgenCS", Description="Converts a C# T4 Template to a Reegenator Template", HideInDialog=false)]
     [Kodeo.Reegenerator.Generators.DefaultExtensionAttribute(Extension=".txt")]
-    public partial class T4ToRgenCS : CodeRendererEx
+    public partial class T4ToRgenCs : CodeRendererEx
     {
     }
 }
