@@ -1,0 +1,1 @@
+File Model1.rgt and Model1.rgt.cs has been generated

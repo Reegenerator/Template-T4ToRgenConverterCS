@@ -1,0 +1,331 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>T4ToRgen</name>
+    </assembly>
+    <members>
+        <member name="M:T4ToRgen.CodeRendererEx.GetIsolatedOutput(System.Action,System.Boolean)">
+            <summary>
+            Instead of generating to a file. This is a workaround to return the value as string
+            </summary>
+            <param name="action"></param>
+            <param name="removeEmptyLines"></param>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:T4ToRgen.CodeRendererEx.RestoreOutput">
+            <summary>
+            Restore saved output while returning current output
+            </summary>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:T4ToRgen.CodeBehind.Render">
+             <summary>
+            Renders the code as defined in the source script file.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:T4ToRgen.DebugExtensions.DebugMember``1(System.Collections.Generic.IEnumerable{``0},System.String)">
+            <summary>
+            Get string representation of Type.Member value
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+            <param name="memberName"></param>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:T4ToRgen.DebugExtensions.DebugMembers``1(System.Collections.Generic.IEnumerable{System.Object},System.String)">
+            <summary>
+            Get string value of specified member of each item in a list as type T
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="list"></param>
+            <param name="memberName"></param>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:T4ToRgen.DebugExtensions.DebugMembers(System.Collections.Generic.IEnumerable{System.Object},System.String)">
+            <summary>
+            Get value of specified member of each item in a list as string array
+            </summary>
+            <param name="list"></param>
+            <param name="memberName"></param>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:T4ToRgen.DebugExtensions.DebugMembers(System.Collections.Generic.IEnumerable{System.Object},System.String,System.String)">
+            <summary>
+            Like DebugMember, but with two members
+            </summary>
+            <param name="list"></param>
+            <param name="memberName"></param>
+            <param name="secondMemberName"></param>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:T4ToRgen.DebugExtensions.DP(EnvDTE.TextPoint,System.Int32,Kodeo.Reegenerator.Generators.OutputPaneTraceListener)">
+            <summary>
+            Alias for DebugPosition
+            </summary>
+            <param name="point"></param>
+            <param name="charCount"></param>
+            <param name="listener"></param>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:T4ToRgen.DebugExtensions.DebugPosition(EnvDTE.TextPoint,System.Int32,Kodeo.Reegenerator.Generators.OutputPaneTraceListener)">
+            <summary>
+            Show the position of a textpoint by printing the surrounding text
+            </summary>
+            <param name="point"></param>
+            <param name="charCount"></param>
+            <param name="listener"></param>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:T4ToRgen.DebugExtensions.DebugHere">
+            <summary>
+            Launch debugger or Break if it's already attached
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="M:T4ToRgen.Extensions.DottedFullName(System.Type)">
+            <summary>
+            Returns full name delimited by only dots (and no +(plus sign))
+            </summary>
+            <param name="x"></param>
+            <returns></returns>
+            <remarks>Nested class is separated with +, while CodeClass delimit them using dots</remarks>
+        </member>
+        <member name="M:T4ToRgen.Extensions.AsElement``1(``0)">
+            <summary>
+            Use this to convert Code element into a more generic CodeElement and get CodeElement based extensions
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="cc"></param>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:T4ToRgen.Extensions.GetCustomAttributes(EnvDTE80.CodeElement2)">
+            <summary>
+            Get Custom Attributes
+            </summary>
+            <param name="ce"></param>
+            <returns></returns>
+            <remarks>
+            Requires Named Argument when declaring the Custom Attribute, otherwise Name will be empty.
+            Not using reflection because it requires successful build
+            </remarks>
+        </member>
+        <member name="M:T4ToRgen.Extensions.GetAncestorClasses(EnvDTE80.CodeClass2)">
+            <summary>
+            Get Bases recursively
+            </summary>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:T4ToRgen.Extensions.GetCommentStartPoint(EnvDTE.TextPoint)">
+            <summary>
+            Get to the beginning of doc comments for startPoint
+            </summary>
+            <param name="startPoint"></param>
+            <returns></returns>
+            <remarks>
+            EnvDte does not have a way to get to the starting point of a code element doc comment.
+            If we need to insert some text before a code element that has doc comments we need to go to the beggining of the comments.
+            </remarks>
+        </member>
+        <member name="M:T4ToRgen.Extensions.GetTypeFromProject(EnvDTE.ProjectItem,System.String)">
+            <summary>
+            Returns a type from an assembly reference by ProjectItem.Project. Cached.
+            </summary>
+            <param name="pi"></param>
+            <param name="typeName"></param>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:T4ToRgen.Extensions.ToPropertyInfo(EnvDTE80.CodeProperty2)">
+            <summary>
+            Convert CodeProperty2 to PropertyInfo. Cached
+            </summary>
+            <param name="prop"></param>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:T4ToRgen.Extensions.GetAssemblyPath(EnvDTE.Project)">
+            <summary>
+            Currently unused. If we require a succesful build, a project that requires succesful generation would never build, catch-22
+            </summary>
+            <param name="vsProject"></param>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:T4ToRgen.Extensions.ConvertFromString(System.Type,System.String)">
+            <summary>
+            Create type instance from string
+            </summary>
+            <param name="type"></param>
+            <param name="value"></param>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:T4ToRgen.Extensions.SetValueFromString(System.Reflection.PropertyInfo,System.Object,System.String)">
+            <summary>
+            Set property value from string representation
+            </summary>
+            <param name="propInfo"></param>
+            <param name="obj"></param>
+            <param name="value"></param>
+            <remarks></remarks>
+        </member>
+        <member name="P:T4ToRgen.Extensions.DocCommentRegex">
+            <summary>
+            Lazy Regex property to match doc comments
+            </summary>
+            <value></value>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="T:T4ToRgen.RgenFileBuilders">
+            <summary>
+            Class to hold the Template StringBuilder and Code behind StringBuilder and other information required to build the Rgen template
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="M:T4ToRgen.ProjectSolutionExtensions.GetName(EnvDTE.Solution)">
+            <summary>
+            Get solution name
+            </summary>
+            <param name="solution"></param>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:T4ToRgen.ProjectSolutionExtensions.Solution(EnvDTE.Project)">
+            <summary>
+            Get solution
+            </summary>
+            <param name="project"></param>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:T4ToRgen.ProjectSolutionExtensions.GetNodePath(EnvDTE.Project)">
+            <summary>
+            Get path to project node. To be used to select the node in Solution Explorer
+            </summary>
+            <param name="project"></param>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:T4ToRgen.ProjectSolutionExtensions.GetNodePath(EnvDTE.ProjectItem)">
+            <summary>
+            Get path to project item node. To be used to select the node in Solution Explorer
+            </summary>
+            <param name="projectItem"></param>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:T4ToRgen.ProjectSolutionExtensions.SelectSolutionExplorerNode(EnvDTE.ProjectItem)">
+            <summary>
+            Selects project item in Solution Explorer
+            </summary>
+            <param name="projectItem"></param>
+            <remarks></remarks>
+        </member>
+        <member name="M:T4ToRgen.ProjectSolutionExtensions.SelectSolutionExplorerNode(EnvDTE80.DTE2,System.String)">
+            <summary>
+            Selects project item in Solution Explorer
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="M:T4ToRgen.StringExtensions.Conjoin(System.String,System.String,System.String)">
+            <summary>
+            Join two strings , only if both are not empty strings
+            </summary>
+            <param name="leftSide"></param>
+            <param name="conjunction"></param>
+            <param name="rightSide"></param>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:T4ToRgen.StringExtensions.IsEqualText(System.String,System.String)">
+            <summary>
+            Compares two strings using StringComparison.InvariantCultureIgnoreCase
+            </summary>
+            <param name="s"></param>
+            <param name="s2"></param>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="F:T4ToRgen.T4Grammar.Comparer">
+            <summary>
+            InvariantCultureIgnoreCase Comparer
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="M:T4ToRgen.T4Translator.T4Translator.TranslateTemplateDirectives(T4ToRgen.RgenFileBuilders,Irony.Parsing.ParseTreeNode)">
+            <summary>
+            Some directive needs to be combined, so they need to be processed separately before other nodes
+            </summary>
+            <param name="rfb"></param>
+            <param name="rootNode"></param>
+            <remarks></remarks>
+        </member>
+        <member name="T:T4ToRgen.T4Translator.T4Translator.IncludeFileManager">
+            <summary>
+            Look for @Include directives, find the the files, parse it and store it in the IncludeDirectiveNode.Tag
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="M:T4ToRgen.T4Translator.T4Translator.IncludeFileManager.ExpandIncludeFiles(Irony.Parsing.ParseTreeNode,T4ToRgen.T4Grammar,Irony.Parsing.Parser)">
+            <summary>
+            Insert the string from the include file inside the include directive tag
+            </summary>
+            <remarks></remarks>
+        </member>
+        <member name="M:T4ToRgen.TextPointExtensions.InsertAndFormat(EnvDTE.TextPoint,System.String)">
+            <summary>
+            Inserts text and format the text (=Format Selection command)
+            </summary>
+            <param name="tp"></param>
+            <param name="text"></param>
+            <returns></returns>
+            <remarks></remarks>
+        </member>
+        <member name="M:T4ToRgen.TextPointExtensions.CharRightExact(EnvDTE.EditPoint,System.Int32)">
+            <summary>
+            Unlike  CharRight, CharRightExact counts newline \r\n as two instead of one char.
+            </summary>
+            <param name="point"></param>
+            <param name="count"></param>
+            <returns></returns>
+            <remarks>
+            DTE functions that moves editpoint counts newline as single character,
+            since we get the character count from regular regex not the DTE find, the char count is slightly off
+            </remarks>
+        </member>
+        <member name="M:T4ToRgen.TextPointExtensions.CharLeftExact(EnvDTE.EditPoint,System.Int32)">
+            <summary>
+            See CharMoveExact
+            </summary>
+            <param name="point"></param>
+            <param name="count"></param>
+            <returns></returns>
+            <remarks>See CharMoveExact</remarks>
+        </member>
+        <member name="M:T4ToRgen.TextPointExtensions.CharMoveExact(EnvDTE.EditPoint,System.Int32,System.Int32)">
+            <summary>
+            Moves cursor/editpoint exactly.
+            </summary>
+            <param name="point"></param>
+            <param name="count"></param>
+            <param name="direction"></param>
+            <returns></returns>
+            <remarks>
+            DTE functions that moves editpoint counts newline as single character,
+            since we get the character count from regular regex not the DTE find, the char count is slightly off
+            </remarks>
+        </member>
+    </members>
+</doc>

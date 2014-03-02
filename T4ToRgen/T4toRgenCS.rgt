@@ -1,0 +1,9 @@
+<%@ Template Language="CS"  ParentClass="CodeRendererEx"
+            ClassName="T4ToRgenCS"  DefaultExtension=".txt"
+            DisplayName="T4ToRgenCS" 
+            Description="Converts a C# T4 Template to a Reegenator Template" %>
+<%@ Import Namespace="System" %>
+<%@ Import Namespace="System.Linq" %>
+<%@ Import Namespace="System.Collections.Generic" %>
+
+

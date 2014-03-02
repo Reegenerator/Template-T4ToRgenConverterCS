@@ -1,0 +1,251 @@
+<%@Template ClassName="Model1" Language= "C#" DefaultExtension= ".Cs" %>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ <%@ Import Namespace= "System" %>
+ <%@ Import Namespace= "System.Linq" %>
+ <%@ Import Namespace= "System.IO" %>
+ <%@ Import Namespace= "System.Collections.Generic" %>
+ <%@ Import Namespace= "System.Xml" %>
+ <%@ Import Namespace= "System.Xml.Linq" %>
+ <%@ Import Namespace= "System.Globalization" %>
+ <%@ Import Namespace= "System.Reflection" %>
+ <%@ Import Namespace= "System.Data.Entity.Core.Metadata.Edm" %>
+ <%@ Import Namespace= "System.Data.Entity.Core.Mapping" %>
+ <%@ Import Namespace= "System.Codedom" %>
+ <%@ Import Namespace= "System.Codedom.Compiler" %>
+ <%@ Import Namespace= "Microsoft.Csharp" %>
+ <%@ Import Namespace= "System.Text" %>
+ <%
+
+Const String Inputfile = @"$Edmxinputfile$";
+Var Texttransform = Dynamictexttransformation.Create(This);
+Var Code = New Codegenerationtools(This);
+Var Ef = New Metadatatools(This);
+Var Typemapper = New Typemapper(Code, Ef, Texttransform.Errors);
+Var	Filemanager = Entityframeworktemplatefilemanager.Create(This);
+Var Itemcollection = New Edmmetadataloader(Texttransform.Host, Texttransform.Errors).Createedmitemcollection(Inputfile);
+Var Codestringgenerator = New Codestringgenerator(Code, Typemapper, Ef);
+
+If (!Typemapper.Verifycaseinsensitivetypeuniqueness(Typemapper.Getallglobalitems(Itemcollection), Inputfile))
+{
+    Return String.Empty;
+}
+
+Writeheader(Codestringgenerator, Filemanager);
+
+Foreach (Var Entity In Typemapper.Getitemstogenerate<Entitytype>(Itemcollection))
+{
+    Filemanager.Startnewfile(Entity.Name + ".Cs");
+    Beginnamespace(Code);
+ %>
+ <%= Codestringgenerator.Usingdirectives(Inheader: False) %>
+ <%= Codestringgenerator.Entityclassopening(Entity) %>
+{
+ <%
+    Var Propertieswithdefaultvalues = Typemapper.Getpropertieswithdefaultvalues(Entity);
+    Var Collectionnavigationproperties = Typemapper.Getcollectionnavigationproperties(Entity);
+    Var Complexproperties = Typemapper.Getcomplexproperties(Entity);
+
+    If (Propertieswithdefaultvalues.Any() || Collectionnavigationproperties.Any() || Complexproperties.Any())
+    {
+ %>
+    Public  <%= Code.Escape(Entity) %>()
+    {
+ <%
+        Foreach (Var Edmproperty In Propertieswithdefaultvalues)
+        {
+ %>
+        This. <%= Code.Escape(Edmproperty) %> =  <%= Typemapper.Createliteral(Edmproperty.Defaultvalue) %>;
+ <%
+        }
+
+        Foreach (Var Navigationproperty In Collectionnavigationproperties)
+        {
+ %>
+        This. <%= Code.Escape(Navigationproperty) %> = New Hashset< <%= Typemapper.Gettypename(Navigationproperty.Toendmember.Getentitytype()) %>>();
+ <%
+        }
+
+        Foreach (Var Complexproperty In Complexproperties)
+        {
+ %>
+        This. <%= Code.Escape(Complexproperty) %> = New  <%= Typemapper.Gettypename(Complexproperty.Typeusage) %>();
+ <%
+        }
+ %>
+    }
+
+ <%
+    }
+
+    Var Simpleproperties = Typemapper.Getsimpleproperties(Entity);
+    If (Simpleproperties.Any())
+    {
+        Foreach (Var Edmproperty In Simpleproperties)
+        {
+ %>
+     <%= Codestringgenerator.Property(Edmproperty) %>
+ <%
+        }
+    }
+
+    If (Complexproperties.Any())
+    {
+ %>
+
+ <%
+        Foreach(Var Complexproperty In Complexproperties)
+        {
+ %>
+     <%= Codestringgenerator.Property(Complexproperty) %>
+ <%
+        }
+    }
+
+    Var Navigationproperties = Typemapper.Getnavigationproperties(Entity);
+    If (Navigationproperties.Any())
+    {
+ %>
+
+ <%
+        Foreach (Var Navigationproperty In Navigationproperties)
+        {
+ %>
+     <%= Codestringgenerator.Navigationproperty(Navigationproperty) %>
+ <%
+        }
+    }
+ %>
+}
+ <%
+    Endnamespace(Code);
+}
+
+Foreach (Var Complex In Typemapper.Getitemstogenerate<Complextype>(Itemcollection))
+{
+    Filemanager.Startnewfile(Complex.Name + ".Cs");
+    Beginnamespace(Code);
+ %>
+ <%= Codestringgenerator.Usingdirectives(Inheader: False, Includecollections: False) %>
+ <%= Accessibility.Fortype(Complex) %> Partial Class  <%= Code.Escape(Complex) %>
+{
+ <%
+    Var Complexproperties = Typemapper.Getcomplexproperties(Complex);
+    Var Propertieswithdefaultvalues = Typemapper.Getpropertieswithdefaultvalues(Complex);
+
+    If (Propertieswithdefaultvalues.Any() || Complexproperties.Any())
+    {
+ %>
+    Public  <%= Code.Escape(Complex) %>()
+    {
+ <%
+        Foreach (Var Edmproperty In Propertieswithdefaultvalues)
+        {
+ %>
+        This. <%= Code.Escape(Edmproperty) %> =  <%= Typemapper.Createliteral(Edmproperty.Defaultvalue) %>;
+ <%
+        }
+
+        Foreach (Var Complexproperty In Complexproperties)
+        {
+ %>
+        This. <%= Code.Escape(Complexproperty) %> = New  <%= Typemapper.Gettypename(Complexproperty.Typeusage) %>();
+ <%
+        }
+ %>
+    }
+
+ <%
+    }
+
+    Var Simpleproperties = Typemapper.Getsimpleproperties(Complex);
+    If (Simpleproperties.Any())
+    {
+        Foreach(Var Edmproperty In Simpleproperties)
+        {
+ %>
+     <%= Codestringgenerator.Property(Edmproperty) %>
+ <%
+        }
+    }
+
+    If (Complexproperties.Any())
+    {
+ %>
+
+ <%
+        Foreach(Var Edmproperty In Complexproperties)
+        {
+ %>
+     <%= Codestringgenerator.Property(Edmproperty) %>
+ <%
+        }
+    }
+ %>
+}
+ <%
+    Endnamespace(Code);
+}
+
+Foreach (Var Enumtype In Typemapper.Getenumitemstogenerate(Itemcollection))
+{
+    Filemanager.Startnewfile(Enumtype.Name + ".Cs");
+    Beginnamespace(Code);
+ %>
+ <%= Codestringgenerator.Usingdirectives(Inheader: False, Includecollections: False) %>
+ <%
+    If (Typemapper.Enumisflags(Enumtype))
+    {
+ %>
+[Flags]
+ <%
+    }
+ %>
+ <%= Codestringgenerator.Enumopening(Enumtype) %>
+{
+ <%
+    Var Foundone = False;
+    
+    Foreach (Metadataitem Member In Typemapper.Getenummembers(Enumtype))
+    {
+        Foundone = True;
+ %>
+     <%= Code.Escape(Typemapper.Getenummembername(Member)) %> =  <%= Typemapper.Getenummembervalue(Member) %>,
+ <%
+    }
+
+    If (Foundone)
+    {
+        This.Generationenvironment.Remove(This.Generationenvironment.Length - 3, 1);
+    }
+ %>
+}
+ <%
+    Endnamespace(Code);
+}
+
+Filemanager.Process();
+
+ %>
+ 
+//------------------------------------------------------------------------------
+// <Auto-Generated>
+//  <%= Codegenerationtools.Getresourcestring("Template_Generatedcodecommentline1") %>
+//
+//  <%= Codegenerationtools.Getresourcestring("Template_Generatedcodecommentline2") %>
+//  <%= Codegenerationtools.Getresourcestring("Template_Generatedcodecommentline3") %>
+// </Auto-Generated>
+//------------------------------------------------------------------------------
+ <%= Codestringgenerator.Usingdirectives(Inheader: True) %>
+ 
+Namespace  <%= Code.Escapenamespace(Codenamespace) %>
+{
+ 
+}
+ 
