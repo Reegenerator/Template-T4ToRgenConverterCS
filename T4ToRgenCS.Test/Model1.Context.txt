@@ -1,1 +1,18 @@
-File Model1_Context.rgt and Model1_Context.rgt.cs has been generated
+File Z:\Documents\Visual Studio 2013\Projects\T4ToRgenConverterCS\T4ToRgenCS.Test\Model1_Context.rgt and Z:\Documents\Visual Studio 2013\Projects\T4ToRgenConverterCS\T4ToRgenCS.Test\Model1_Context.rgt.cs has been generated.
+These references have been added to the project
+Microsoft.VisualStudio.TextTemplating
+EnvDTE
+System
+System.Linq
+System.IO
+System.Collections.Generic
+System.Xml
+System.Xml.Linq
+System.Globalization
+System.Reflection
+System.Data.Entity.Core.Metadata.Edm
+System.Data.Entity.Core.Mapping
+System.CodeDom
+System.CodeDom.Compiler
+Microsoft.CSharp
+System.Text

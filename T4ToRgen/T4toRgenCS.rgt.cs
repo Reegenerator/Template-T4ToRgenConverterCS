@@ -50,7 +50,10 @@ namespace T4ToRgen
             var rgenProjItem = ProjectItem.Project.DteObject.ProjectItems.AddFromFile(rgenFile.FullName);
             File.WriteAllText(codeBehindFile.FullName, writers.GenCodeFile());
             rgenProjItem.ProjectItems.AddFromFile(codeBehindFile.FullName);
-            var msg = string.Format("File {0} and {1} has been generated", rgenFile.Name, codeBehindFile.Name);
+
+            var msg =
+                GetIsolatedOutput(
+                    () => GenReadme(rgenFile.FullName, codeBehindFile.FullName, writers.ImportedNamespaces.ToArray()));
             var res = new RenderResults(msg);
             return res;
         }

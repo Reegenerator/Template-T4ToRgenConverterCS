@@ -1,5 +1,5 @@
 <%@ Template Language="CS"  ParentClass="CodeRendererEx"
-            ClassName="T4ToRgenCS"  DefaultExtension=".txt"
+            ClassName="T4ToRgenCs"  DefaultExtension=".txt"
             DisplayName="T4ToRgenCS" 
             Description="Converts a C# T4 Template to a Reegenator Template" %>
 <%@ Import Namespace="System" %>
@@ -7,3 +7,17 @@
 <%@ Import Namespace="System.Collections.Generic" %>
 
 
+<%@ Method Name="GenReadme" %>
+<%@ Parameter Name="rgenFilename" Type="string" %>
+<%@ Parameter Name="codeFilename" Type="string" %>
+<%@ Parameter Name="references" Type="string[]" %>
+File <%= rgenFilename %> and <%= codeFilename %> has been generated.
+These references have been added to the project
+<% 
+	foreach(var r in references){
+		%>
+<%=r %>
+		<%
+	}
+%>
+<%/ Method %>

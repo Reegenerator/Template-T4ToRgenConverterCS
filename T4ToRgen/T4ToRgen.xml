@@ -264,6 +264,14 @@
             </summary>
             <remarks></remarks>
         </member>
+        <member name="M:T4ToRgen.T4ToRgenCs.GenReadme(System.String,System.String,System.String[])">
+             <summary>
+            Renders the code as defined in the source script file.
+            </summary>
+            <param name="rgenFilename"></param>
+            <param name="codeFilename"></param>
+            <param name="references"></param>
+        </member>
         <member name="M:T4ToRgen.T4Translator.T4Translator.TranslateTemplateDirectives(T4ToRgen.RgenFileBuilders,Irony.Parsing.ParseTreeNode)">
             <summary>
             Some directive needs to be combined, so they need to be processed separately before other nodes
