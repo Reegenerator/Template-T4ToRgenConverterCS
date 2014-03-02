@@ -43,13 +43,12 @@ namespace T4ToRgen.T4Translator
                                    { DirectiveNode = incDir, File = GetIncludeFile(Convert.ToString(filepath)) };
                 foreach (var incFile in includeFiles)
                 {
-                    if (_expandedFiles.Contains(incFile.File.FullName))
-                    {
-                        continue;
-                    }
+                    //do not expand the same files, in case there's a multiple nested references to the same include files
+                    if (_expandedFiles.Contains(incFile.File.FullName)) continue;
                     var text = File.ReadAllText(Convert.ToString(incFile.File.FullName));
                     var content = grammar.GetContentNode(parser.Parse(text));
                     incFile.DirectiveNode.Tag = new TranslationTag { ExpandedParseTreeNode = content };
+                    //remember expanded file
                     _expandedFiles.Add(incFile.File.FullName);
 
                     //recursively process content from include file
@@ -62,8 +61,7 @@ namespace T4ToRgen.T4Translator
                 mgr.ExpandIncludeFiles(rootNode, grammar, parser);
             }
 
-            private FileInfo GetIncludeFile(string path)
-            {
+            private FileInfo GetIncludeFile(string path) {
                 FileInfo file = null;
                 if (Path.IsPathRooted(path))
                 {
@@ -71,6 +69,7 @@ namespace T4ToRgen.T4Translator
                 }
                 else
                 {
+                    //Find file in any of includeDirs
                     foreach (var d in _includeDirs)
                     {
                         var fileInDir = new FileInfo(Path.Combine(d.FullName, path));

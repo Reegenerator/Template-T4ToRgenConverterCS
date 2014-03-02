@@ -94,6 +94,21 @@
     </None>
     <None Include="Model1_Context.rgt" />
     <None Include="packages.config" />
+    <None Include="TextTemplate1.tt">
+      <Generator>RgenRenderer</Generator>
+      <rgenRenderers>&lt;%3fxml version="1.0" encoding="utf-16"%3f&gt;
+&lt;RgenAttachInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" OldCustomTool="TextTemplatingFileGenerator" xmlns="http://www.reegenerator.com/RgenAttachInfoSchema.xsd"&gt;
+  &lt;AttachedRenderers&gt;
+    &lt;AttachedRenderer ClassName="T4ToRgen.T4ToRgenCs" Extension=".txt"&gt;
+      &lt;ProjectPath&gt;%24%28SolutionDir%29\T4ToRgen\T4ToRgen.csproj&lt;/ProjectPath&gt;
+      &lt;Properties&gt;
+        &lt;Property Name="AdditionalIncludePaths" /&gt;
+      &lt;/Properties&gt;
+    &lt;/AttachedRenderer&gt;
+  &lt;/AttachedRenderers&gt;
+&lt;/RgenAttachInfo&gt;</rgenRenderers>
+      <LastGenOutput>TextTemplate1.txt</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -106,6 +121,10 @@
     <Content Include="Model1.txt">
       <AutoGen>True</AutoGen>
       <DependentUpon>Model1.tt</DependentUpon>
+    </Content>
+    <Content Include="TextTemplate1.txt">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>TextTemplate1.tt</DependentUpon>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

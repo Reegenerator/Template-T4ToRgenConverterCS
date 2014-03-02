@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System;
+using System.Diagnostics;
 using System.Linq;
 
 
@@ -211,6 +212,7 @@ namespace T4ToRgen
         }
         public ParseTreeNode GetContentNode(ParseTree parseTree)
         {
+            DebugExtensions.DebugHere();
             return parseTree.Root.ChildNodes.First();
         }
         public void RegisterBracePair(KeyTerm open, KeyTerm close)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Irony.Parsing;
 using Kodeo.Reegenerator.Generators;
 using System.IO;
@@ -34,15 +35,33 @@ namespace T4ToRgen
             var className = itemName.ToIdentifier();
             var rgenFile = new FileInfo(ProjectItem.ExpandPath(className + ".rgt"));
             var codeBehindFile = new FileInfo(ProjectItem.ExpandPath(className + ".rgt.cs"));
+            //check existing file
             if (WarnResultFileExists(rgenFile.FullName, codeBehindFile.FullName))
             {
                 return null;
             }
+            //init grammar
             var grammar = new T4Grammar();
             var languageData = new LanguageData(grammar);
             var parser = new Parser(languageData);
+            //parse
             var t4Text = ProjectItem.GetCurrentContentAsString();
-            var content = grammar.GetContentNode(parser.Parse(t4Text));
+            ParseTree parseTree;
+            parseTree = parser.Parse(t4Text);
+            //check parse result
+            if (parseTree.Status == ParseTreeStatus.Error)
+            {
+                var errors = string.Join(Newline, 
+                    parseTree.ParserMessages.Select(m =>  
+                        m.Location + " " + m.Message
+                    ).ToArray());
+                MessageBox.Show("Parsing Failed.\r\n" + errors);
+                return new RenderResults(errors);
+            }
+
+
+            var content = grammar.GetContentNode(parseTree);
+            //Translate
             var translator = new T4Translator.T4Translator(ProjectItem, grammar, parser);
             var writers = new RgenFileBuilders(Convert.ToString(className));
             translator.Translate(writers, content);
@@ -54,8 +73,8 @@ namespace T4ToRgen
             var msg =
                 GetIsolatedOutput(
                     () => GenReadme(rgenFile.FullName, codeBehindFile.FullName, writers.ImportedNamespaces.ToArray()));
-            var res = new RenderResults(msg);
-            return res;
+         
+            return new RenderResults(msg);;
         }
     }
 }

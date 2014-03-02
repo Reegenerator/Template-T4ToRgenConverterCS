@@ -75,13 +75,13 @@ namespace T4ToRgen.T4Translator
                         res = Convert.ToString(TranslateFunction.Invoke(node));
                         break;
                 }
+
                 if (res == null) return res;
+                //add space if necessary
                 var terminal = node.Term as Terminal;
                 if (terminal == null) return res;
-                if (terminal.SkipsWhitespaceAfter)
-                {
-                    res += " ";
-                }
+                if (terminal.SkipsWhitespaceAfter)res += " ";
+                
                 return res;
             }
         }

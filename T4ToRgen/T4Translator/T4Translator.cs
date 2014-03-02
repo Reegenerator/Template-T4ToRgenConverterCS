@@ -36,7 +36,9 @@ namespace T4ToRgen.T4Translator
                             }));
             _rgenTranslation.Add(_grammar.BeginSegment, new TranslationRule("<%"));
             _rgenTranslation.Add(_grammar.EndSegment, new TranslationRule("%>"));
+            //remove Embedded class prefix
             _rgenTranslation.Add(_grammar.EmbeddedClassMemberPrefix, new TranslationRule(string.Empty));
+
             _getTranslatedTextTitleCaseTerms = new BnfTerm[] { _grammar.AttributeName, _grammar.DirectiveName };
         }
 
@@ -50,42 +52,34 @@ namespace T4ToRgen.T4Translator
         }
         private void TranslateNodeRecursive(RgenFileBuilders sb, ParseTreeNode node)
         {
-            if (SkipNode(node))
-            {
-                return;
-            }
+            if (SkipNode(node)) return;
             WriteCodeBehindImportsStatement(sb, node);
             var tag = node.Tag as TranslationTag;
             if (node.Term == _grammar.EmbeddedClassMember)
             {
                 TranslateEmbeddedClassMember(sb, node);
             }
-            else
+            else if (tag != null)
+                //Process expanded tag 
+                //Tag may contain another ParseTreeNode from an Include directive (which is treated as embedded file by T4)
+                TranslateNodeRecursive(sb, tag.ExpandedParseTreeNode);
+            else if (node.ChildNodes.Any())
             {
-                if (tag != null)
+                //recursively translate node
+                foreach (var n in node.ChildNodes)
                 {
-                    TranslateNodeRecursive(sb, tag.ExpandedParseTreeNode);
-                }
-                else
-                {
-                    if (node.ChildNodes.Any())
-                    {
-                        foreach (var n in node.ChildNodes)
-                        {
-                            TranslateNodeRecursive(sb, n);
-                        }
-                    }
-                    else
-                    {
-                        var translated = GetTranslatedText(node);
-                        if (translated != null)
-                        {
-                            sb.TemplateFile.Append(translated);
-                        }
-                        _processed.Add(node);
-                    }
+                    TranslateNodeRecursive(sb, n);
                 }
             }
+            else
+            {
+                //No child, this is a terminal, translate node
+                var translated = GetTranslatedText(node);
+                if (translated != null) sb.TemplateFile.Append(translated);
+                _processed.Add(node);
+            }
+
+
         }
         private void TranslateEmbeddedClassMember(RgenFileBuilders sb, ParseTreeNode node)
         {
@@ -120,6 +114,7 @@ namespace T4ToRgen.T4Translator
                                   from gc in c.ChildNodes
                                   where gc.Term == _grammar.Directive
                                   select gc).ToArray();
+                //Combine the attributes of template and output directives
                 var templateDirectiveNames = new[] { "template", "output" };
                 var templateDirectives = from d in directives
                                          where templateDirectiveNames.Contains(_grammar.GetDirectiveName(d), T4Grammar.Comparer)
@@ -145,15 +140,16 @@ namespace T4ToRgen.T4Translator
         public bool SkipNode(ParseTreeNode node)
         {
             var skip = false;
+            //skip already processed
             if (_processed.Contains(node)) return true;
 
             if (node.Term == _grammar.Directive)
-            {
+            {//Skip unknown grammars
                 var dirName = _grammar.GetDirectiveName(node);
                 skip = !_skipNodeProcessDirectives.Contains(dirName, T4Grammar.Comparer);
             }
             else if (node.Term == _grammar.Attribute)
-            {
+            {//Skip attributes not found in Dictionary
                 var attrName = node.ChildNodes.First().FindTokenAndGetText();
                 var found = _rgenTranslation[_grammar.AttributeName].ReplacementDict.ContainsKey(attrName);
                 skip = !found;
@@ -173,8 +169,8 @@ namespace T4ToRgen.T4Translator
             _rgenTranslation.TryGetValue(node.Term, out rule);
             if (rule != null) return rule.Translate(node);
 
-            return _getTranslatedTextTitleCaseTerms.Contains(node.Term) ? 
-                TranslationRule.AsIs.Translate(node) : 
+            return _getTranslatedTextTitleCaseTerms.Contains(node.Term) ?
+                TranslationRule.AsIs.Translate(node) :
                 TranslationRule.AsIsTitleCase.Translate(node);
         }
         public void AddAssemblyDirectiveAsProjectReference(RgenFileBuilders rfb, IEnumerable<ParseTreeNode> directives)
